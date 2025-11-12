@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedLead Email Signature Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2C7A9F;
+        }
+
+        .preview-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            min-height: 200px;
+        }
+
+        #signaturePreview {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .code-container {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .code-container pre {
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #2C7A9F;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #236380;
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .instructions h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        /* Signature Styles */
+        .email-signature {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #333333;
+        }
+
+        .signature-table {
+            border-collapse: collapse;
+            max-width: 600px;
+        }
+
+        .signature-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2C7A9F;
+            margin: 0;
+            padding: 0;
+            line-height: 1.2;
+        }
+
+        .signature-title {
+            font-size: 14px;
+            color: #666666;
+            margin: 5px 0 12px 0;
+            padding: 0;
+            line-height: 1.3;
+        }
+
+        .signature-contact {
+            font-size: 13px;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .signature-icon {
+            color: #2C7A9F;
+            margin-right: 8px;
+        }
+
+        .signature-link {
+            color: #2C7A9F;
+            text-decoration: none;
+        }
+
+        .signature-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .signature-logo {
+            width: 120px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Email Signature Generator</h1>
+            <p>Create professional email signatures for MedLead Convert team</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Your Information</h2>
+                <form id="signatureForm">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" value="Josh Cherry" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Job Title *</label>
+                        <input type="text" id="title" value="Account Manager | Co-Founder" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input type="text" id="location" value="Houston, TX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" value="(713) 528-8718" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="website">Website *</label>
+                        <input type="text" id="website" value="www.medleadconvert.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profileImage">Profile Image URL *</label>
+                        <input type="url" id="profileImage" value="https://via.placeholder.com/100x100/4A90E2/FFFFFF?text=JC" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="logoImage">Company Logo URL *</label>
+                        <input type="url" id="logoImage" value="https://via.placeholder.com/120x50/FFFFFF/2C7A9F?text=MEDLEAD+CONVERT" required>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Preview</h2>
+                <div class="preview-container">
+                    <div id="signaturePreview"></div>
+                </div>
+
+                <h2>HTML Code</h2>
+                <div class="code-container">
+                    <button class="copy-btn" id="copyBtn">Copy Code</button>
+                    <pre id="htmlCode"></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>How to Use Your Email Signature</h3>
+            <ol>
+                <li>Fill in your personal information in the form above</li>
+                <li>Upload your profile image and company logo to a hosting service (Imgur, Google Drive, etc.) and paste the URLs</li>
+                <li>Click the "Copy Code" button to copy the HTML code</li>
+                <li><strong>For Gmail:</strong> Settings → See all settings → General → Signature → Paste the HTML code</li>
+                <li><strong>For Apple Mail:</strong> Mail → Preferences → Signatures → Select account → Paste the HTML code</li>
+                <li><strong>For Outlook:</strong> File → Options → Mail → Signatures → New → Paste the HTML code</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Get form elements
+        const form = document.getElementById('signatureForm');
+        const inputs = form.querySelectorAll('input');
+        const preview = document.getElementById('signaturePreview');
+        const htmlCode = document.getElementById('htmlCode');
+        const copyBtn = document.getElementById('copyBtn');
+
+        // Generate signature HTML
+        function generateSignature() {
+            const name = document.getElementById('name').value;
+            const title = document.getElementById('title').value;
+            const location = document.getElementById('location').value;
+            const phone = document.getElementById('phone').value;
+            const website = document.getElementById('website').value;
+            const profileImage = document.getElementById('profileImage').value;
+            const logoImage = document.getElementById('logoImage').value;
+
+            // Format phone for tel: link
+            const phoneFormatted = phone.replace(/\D/g, '');
+            const websiteUrl = website.startsWith('http') ? website : `https://${website}`;
+
+            const signatureHTML = `<table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333333; max-width: 600px; border-collapse: collapse;">
+    <tr>
+        <td style="padding: 0; vertical-align: top; padding-right: 20px;">
+            <img src="${profileImage}" alt="${name}" style="width: 100px; height: 100px; border-radius: 10px; display: block;" />
+        </td>
+        <td style="padding: 0; vertical-align: top;">
+            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 0 0 5px 0;">
+                        <div style="font-size: 20px; font-weight: bold; color: #2C7A9F; margin: 0; padding: 0; line-height: 1.2;">${name}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0 0 15px 0;">
+                        <div style="font-size: 14px; color: #666666; margin: 0; padding: 0; line-height: 1.3;">${title}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0 0 5px 0;">
+                        <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 0 8px 0 0; vertical-align: middle;">
+                                    <span style="color: #2C7A9F; font-size: 14px;">📍</span>
+                                </td>
+                                <td style="padding: 0; vertical-align: middle;">
+                                    <span style="font-size: 13px; color: #333333;">${location}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0 0 5px 0;">
+                        <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 0 8px 0 0; vertical-align: middle;">
+                                    <span style="color: #2C7A9F; font-size: 14px;">📞</span>
+                                </td>
+                                <td style="padding: 0; vertical-align: middle;">
+                                    <a href="tel:+1${phoneFormatted}" style="font-size: 13px; color: #333333; text-decoration: none;">${phone}</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0 0 15px 0;">
+                        <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 0 8px 0 0; vertical-align: middle;">
+                                    <span style="color: #2C7A9F; font-size: 14px;">🌐</span>
+                                </td>
+                                <td style="padding: 0; vertical-align: middle;">
+                                    <a href="${websiteUrl}" style="font-size: 13px; color: #2C7A9F; text-decoration: none;">${website}</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0;">
+                        <img src="${logoImage}" alt="MedLead Convert" style="width: 120px; display: block;" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>`;
+
+            return signatureHTML;
+        }
+
+        // Update preview and code
+        function updateSignature() {
+            const signature = generateSignature();
+            preview.innerHTML = signature;
+            htmlCode.textContent = signature;
+        }
+
+        // Copy to clipboard
+        copyBtn.addEventListener('click', async () => {
+            const signature = generateSignature();
+            try {
+                await navigator.clipboard.writeText(signature);
+                copyBtn.textContent = 'Copied!';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy Code';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = signature;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                copyBtn.textContent = 'Copied!';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy Code';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }
+        });
+
+        // Listen for input changes
+        inputs.forEach(input => {
+            input.addEventListener('input', updateSignature);
+        });
+
+        // Initial generation
+        updateSignature();
+    </script>
+</body>
+</html>
