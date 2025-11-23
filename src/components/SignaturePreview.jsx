@@ -4,8 +4,8 @@ const SignaturePreview = ({ data }) => {
     const signatureRef = useRef(null);
 
     const getLogoSrc = () => {
-        if (data.logo === 'primary') return '/assets/logo1.png'; // Assuming this path
-        if (data.logo === 'secondary') return '/assets/logo2.png';
+        if (data.logo === 'primary') return 'https://res.cloudinary.com/da2gi6rwv/image/upload/v1763908562/MEDLEAD_Logo_Full_jdjdkg.png';
+        if (data.logo === 'secondary') return 'https://res.cloudinary.com/da2gi6rwv/image/upload/v1763908534/MedLead_Logo_Symbol_h8pjlx.png';
         return null;
     };
 
@@ -58,8 +58,8 @@ const SignaturePreview = ({ data }) => {
                                 {data.showHeadshot && data.headshotUrl && (
                                     <td style={{ paddingRight: '20px', verticalAlign: 'top' }}>
                                         <div style={{
-                                            width: `${data.headshotContainerSize}px`,
-                                            height: `${data.headshotContainerSize}px`,
+                                            width: `${data.headshotContainerSize} px`,
+                                            height: `${data.headshotContainerSize} px`,
                                             overflow: 'hidden',
                                             borderRadius: data.headshotShape === 'circle' ? '50%' : data.headshotShape === 'rounded' ? '10px' : '0',
                                             position: 'relative',
@@ -71,12 +71,12 @@ const SignaturePreview = ({ data }) => {
                                                 src={data.headshotUrl}
                                                 alt={data.fullName}
                                                 style={{
-                                                    width: `${data.headshotImageScale}%`,
+                                                    width: `${data.headshotImageScale}% `,
                                                     height: 'auto',
                                                     maxWidth: 'none',
                                                     position: 'relative',
-                                                    left: `${(data.headshotX - 50) * 5}px`,
-                                                    top: `${(data.headshotY - 50) * 5}px`,
+                                                    left: `${(data.headshotX - 50) * 5} px`,
+                                                    top: `${(data.headshotY - 50) * 5} px`,
                                                     display: 'inline-block'
                                                 }}
                                             />
@@ -98,7 +98,7 @@ const SignaturePreview = ({ data }) => {
                                                 <td style={{ paddingBottom: '15px' }}>
                                                     {logoSrc && (
                                                         <img
-                                                            src={window.location.origin + logoSrc} // Use absolute URL for preview, but might need hosting for real email
+                                                            src={logoSrc}
                                                             alt="MedLead Convert"
                                                             style={{ height: '30px', display: 'block' }}
                                                         />
@@ -109,39 +109,41 @@ const SignaturePreview = ({ data }) => {
                                                 <td style={{ fontSize: '13px', color: '#64748b' }}>
                                                     {data.phone && (
                                                         <div style={{ marginBottom: '2px' }}>
-                                                            <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>P:</span> <a href={`tel:${data.phone}`} style={{ color: '#64748b', textDecoration: 'none' }}>{data.phone}</a>
+                                                            <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>P:</span> <a href={`tel:${data.phone} `} style={{ color: '#64748b', textDecoration: 'none' }}>{data.phone}</a>
                                                         </div>
                                                     )}
                                                     {data.email && (
                                                         <div style={{ marginBottom: '2px' }}>
-                                                            <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>E:</span> <a href={`mailto:${data.email}`} style={{ color: '#64748b', textDecoration: 'none' }}>{data.email}</a>
+                                                            <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>E:</span> <a href={`mailto:${data.email} `} style={{ color: '#64748b', textDecoration: 'none' }}>{data.email}</a>
                                                         </div>
                                                     )}
                                                     {data.website && (
                                                         <div style={{ marginBottom: '2px' }}>
                                                             <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>W:</span> <a href={`https://${data.website}`} style={{ color: '#64748b', textDecoration: 'none' }}>{data.website}</a>
-                                                        </div>
+                                                        </div >
                                                     )}
-                                                    {data.address && (
-                                                        <div>
-                                                            <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>A:</span> {data.address}
-                                                        </div>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                                    {
+                                                        data.address && (
+                                                            <div>
+                                                                <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>A:</span> {data.address}
+                                                            </div>
+                                                        )
+                                                    }
+                                                </td >
+                                            </tr >
+                                        </tbody >
+                                    </table >
+                                </td >
+                            </tr >
+                        </tbody >
+                    </table >
+                </div >
+            </div >
             <p style={{ marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                 Note: Images (logos/headshots) must be hosted publicly to appear in emails sent to others.
                 For now, local uploads work for the preview and copy, but might break in recipients' inboxes if not hosted.
             </p>
-        </div>
+        </div >
     );
 };
 
