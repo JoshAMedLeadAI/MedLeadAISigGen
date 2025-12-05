@@ -14,7 +14,7 @@ function App() {
     headshotUrl: '',
     headshotType: 'upload', // 'upload' or 'logo'
     showHeadshot: true,
-    headshotContainerSize: 175, // Fixed circle/container size
+    headshotContainerSize: 130, // Fixed circle/container size
     headshotImageScale: 100, // Scale of the image inside (%)
     headshotShape: 'circle', // 'circle', 'rounded', 'square'
     headshotX: 50,

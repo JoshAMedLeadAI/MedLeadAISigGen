@@ -115,10 +115,10 @@ const SignatureForm = ({ data, onChange, onImageUpload }) => {
                         value={data.headshotType || 'upload'}
                         onChange={(e) => {
                             onChange(e);
-                            // If switching to logo, set the logo URL
+                            // If switching to logo, set the pre-rendered logo URL
                             if (e.target.value === 'logo') {
-                                onImageUpload('https://res.cloudinary.com/da2gi6rwv/image/upload/v1763908534/MedLead_Logo_Symbol_h8pjlx.png');
-                            } else if (e.target.value === 'upload' && data.headshotUrl?.includes('MedLead_Logo_Symbol')) {
+                                onImageUpload('https://res.cloudinary.com/da2gi6rwv/image/upload/v1764966256/lcqxq8smdn39ds6mjvwj.png');
+                            } else if (e.target.value === 'upload' && data.headshotUrl?.includes('cloudinary')) {
                                 // Clear the logo URL if switching back to upload
                                 onImageUpload('');
                             }
@@ -158,58 +158,63 @@ const SignatureForm = ({ data, onChange, onImageUpload }) => {
                         <p className="label">Preview:</p>
                         <img src={data.headshotUrl} alt="Headshot Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '50%' }} />
 
-                        <div style={{ marginTop: '1rem' }}>
-                            <label className="label">Image Scale ({data.headshotImageScale}%)</label>
-                            <input
-                                type="range"
-                                name="headshotImageScale"
-                                min="100"
-                                max="300"
-                                value={data.headshotImageScale}
-                                onChange={onChange}
-                                className="input"
-                            />
-                        </div>
+                        {/* Only show adjustment controls for uploaded photos, not for MedLead logo */}
+                        {data.headshotType !== 'logo' && (
+                            <>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <label className="label">Image Scale ({data.headshotImageScale}%)</label>
+                                    <input
+                                        type="range"
+                                        name="headshotImageScale"
+                                        min="100"
+                                        max="300"
+                                        value={data.headshotImageScale}
+                                        onChange={onChange}
+                                        className="input"
+                                    />
+                                </div>
 
-                        <div style={{ marginTop: '1rem' }}>
-                            <label className="label">Shape</label>
-                            <select
-                                name="headshotShape"
-                                value={data.headshotShape}
-                                onChange={onChange}
-                                className="input"
-                            >
-                                <option value="circle">Circle</option>
-                                <option value="rounded">Rounded Corners</option>
-                                <option value="square">Square</option>
-                            </select>
-                        </div>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <label className="label">Shape</label>
+                                    <select
+                                        name="headshotShape"
+                                        value={data.headshotShape}
+                                        onChange={onChange}
+                                        className="input"
+                                    >
+                                        <option value="circle">Circle</option>
+                                        <option value="rounded">Rounded Corners</option>
+                                        <option value="square">Square</option>
+                                    </select>
+                                </div>
 
-                        <div style={{ marginTop: '1rem' }}>
-                            <label className="label">Position X ({data.headshotX}%)</label>
-                            <input
-                                type="range"
-                                name="headshotX"
-                                min="0"
-                                max="100"
-                                value={data.headshotX}
-                                onChange={onChange}
-                                className="input"
-                            />
-                        </div>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <label className="label">Position X ({data.headshotX}%)</label>
+                                    <input
+                                        type="range"
+                                        name="headshotX"
+                                        min="0"
+                                        max="100"
+                                        value={data.headshotX}
+                                        onChange={onChange}
+                                        className="input"
+                                    />
+                                </div>
 
-                        <div style={{ marginTop: '1rem' }}>
-                            <label className="label">Position Y ({data.headshotY}%)</label>
-                            <input
-                                type="range"
-                                name="headshotY"
-                                min="0"
-                                max="100"
-                                value={data.headshotY}
-                                onChange={onChange}
-                                className="input"
-                            />
-                        </div>
+                                <div style={{ marginTop: '1rem' }}>
+                                    <label className="label">Position Y ({data.headshotY}%)</label>
+                                    <input
+                                        type="range"
+                                        name="headshotY"
+                                        min="0"
+                                        max="100"
+                                        value={data.headshotY}
+                                        onChange={onChange}
+                                        className="input"
+                                    />
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
             </div>

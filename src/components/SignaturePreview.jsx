@@ -13,33 +13,42 @@ const SignaturePreview = ({ data }) => {
 
     const logoSrc = getLogoSrc();
 
+    // Pre-rendered MedLead logo for headshot use
+    const MEDLEAD_LOGO_HEADSHOT_URL = 'https://res.cloudinary.com/da2gi6rwv/image/upload/v1764966256/lcqxq8smdn39ds6mjvwj.png';
+
     const copyToClipboard = async () => {
         if (!signatureRef.current) return;
 
         let finalHeadshotUrl = null;
 
-        // If there's a headshot to process, render it to canvas and upload
+        // If there's a headshot to process
         if (data.showHeadshot && data.headshotUrl) {
-            setIsUploading(true);
-            try {
-                // Render the headshot with all transformations baked in
-                const blob = await renderHeadshotToCanvas(data.headshotUrl, {
-                    containerSize: data.headshotContainerSize,
-                    imageScale: data.headshotImageScale,
-                    positionX: data.headshotX,
-                    positionY: data.headshotY,
-                    shape: data.headshotShape
-                });
+            // If using MedLead logo as headshot, use the pre-rendered version directly
+            if (data.headshotType === 'logo') {
+                finalHeadshotUrl = MEDLEAD_LOGO_HEADSHOT_URL;
+            } else {
+                // For uploaded photos, render to canvas and upload
+                setIsUploading(true);
+                try {
+                    // Render the headshot with all transformations baked in
+                    const blob = await renderHeadshotToCanvas(data.headshotUrl, {
+                        containerSize: data.headshotContainerSize,
+                        imageScale: data.headshotImageScale,
+                        positionX: data.headshotX,
+                        positionY: data.headshotY,
+                        shape: data.headshotShape
+                    });
 
-                // Upload the rendered PNG to Cloudinary
-                finalHeadshotUrl = await uploadBlob(blob);
-            } catch (error) {
-                console.error('Failed to process headshot:', error);
-                alert('Failed to upload headshot. Please try again.');
+                    // Upload the rendered PNG to Cloudinary
+                    finalHeadshotUrl = await uploadBlob(blob);
+                } catch (error) {
+                    console.error('Failed to process headshot:', error);
+                    alert('Failed to upload headshot. Please try again.');
+                    setIsUploading(false);
+                    return;
+                }
                 setIsUploading(false);
-                return;
             }
-            setIsUploading(false);
         }
 
         // Generate the final HTML with the Cloudinary URL
@@ -65,7 +74,7 @@ const SignaturePreview = ({ data }) => {
     // Generate signature HTML with simple img tag for headshot (no CSS positioning)
     const generateSignatureHtml = (headshotUrl) => {
         const headshotHtml = headshotUrl ? `
-            <td style="padding-right: 20px; vertical-align: top;">
+            <td style="padding-right: 12px; vertical-align: top;">
                 <img src="${headshotUrl}" alt="${data.fullName}" style="width: ${data.headshotContainerSize}px; height: ${data.headshotContainerSize}px; display: block; ${data.headshotShape === 'circle' ? 'border-radius: 50%;' : data.headshotShape === 'rounded' ? 'border-radius: 10px;' : ''}" />
             </td>
         ` : '';
@@ -77,25 +86,25 @@ const SignaturePreview = ({ data }) => {
                 <tbody>
                     <tr>
                         ${headshotHtml}
-                        <td style="vertical-align: top; ${showDivider ? 'border-left: 2px solid #06b6d4; padding-left: 20px;' : ''}">
+                        <td style="vertical-align: top; ${showDivider ? 'border-left: 2px solid #06b6d4; padding-left: 12px;' : ''}">
                             <table cellpadding="0" cellspacing="0" border="0">
                                 <tbody>
                                     <tr>
-                                        <td style="padding-bottom: 5px;">
-                                            <strong style="font-size: 18px; color: #0f172a; display: block;">${data.fullName}</strong>
-                                            <span style="font-size: 14px; color: #06b6d4; font-weight: bold; text-transform: uppercase;">${data.title}</span>
+                                        <td style="padding-bottom: 3px;">
+                                            <strong style="font-size: 14px; color: #0f172a; display: block;">${data.fullName}</strong>
+                                            <span style="font-size: 11px; color: #06b6d4; font-weight: bold; text-transform: uppercase;">${data.title}</span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="padding-bottom: 15px;">
-                                            ${logoSrc ? `<img src="${logoSrc}" alt="MedLead Convert" style="height: 30px; display: block;" />` : ''}
+                                        <td style="padding-bottom: 8px;">
+                                            ${logoSrc ? `<img src="${logoSrc}" alt="MedLead Convert" style="height: 20px; display: block;" />` : ''}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="font-size: 13px; color: #64748b;">
-                                            ${data.phone ? `<div style="margin-bottom: 2px;"><span style="color: #06b6d4; font-weight: bold;">P:</span> <a href="tel:${data.phone}" style="color: #64748b; text-decoration: none;">${data.phone}</a></div>` : ''}
-                                            ${data.email ? `<div style="margin-bottom: 2px;"><span style="color: #06b6d4; font-weight: bold;">E:</span> <a href="mailto:${data.email}" style="color: #64748b; text-decoration: none;">${data.email}</a></div>` : ''}
-                                            ${data.website ? `<div style="margin-bottom: 2px;"><span style="color: #06b6d4; font-weight: bold;">W:</span> <a href="https://${data.website}" style="color: #64748b; text-decoration: none;">${data.website}</a></div>` : ''}
+                                        <td style="font-size: 11px; color: #64748b;">
+                                            ${data.phone ? `<div style="margin-bottom: 1px;"><span style="color: #06b6d4; font-weight: bold;">P:</span> <a href="tel:${data.phone}" style="color: #64748b; text-decoration: none;">${data.phone}</a></div>` : ''}
+                                            ${data.email ? `<div style="margin-bottom: 1px;"><span style="color: #06b6d4; font-weight: bold;">E:</span> <a href="mailto:${data.email}" style="color: #64748b; text-decoration: none;">${data.email}</a></div>` : ''}
+                                            ${data.website ? `<div style="margin-bottom: 1px;"><span style="color: #06b6d4; font-weight: bold;">W:</span> <a href="https://${data.website}" style="color: #64748b; text-decoration: none;">${data.website}</a></div>` : ''}
                                             ${data.address ? `<div><span style="color: #06b6d4; font-weight: bold;">A:</span> ${data.address}</div>` : ''}
                                         </td>
                                     </tr>
@@ -134,7 +143,7 @@ const SignaturePreview = ({ data }) => {
                             <tr>
                                 {/* Headshot Column */}
                                 {data.showHeadshot && data.headshotUrl && (
-                                    <td style={{ paddingRight: '20px', verticalAlign: 'top' }}>
+                                    <td style={{ paddingRight: '12px', verticalAlign: 'top' }}>
                                         <div style={{
                                             width: `${data.headshotContainerSize}px`,
                                             height: `${data.headshotContainerSize}px`,
@@ -163,40 +172,40 @@ const SignaturePreview = ({ data }) => {
                                 )}
 
                                 {/* Info Column */}
-                                <td style={{ verticalAlign: 'top', borderLeft: data.showHeadshot && data.headshotUrl ? '2px solid #06b6d4' : 'none', paddingLeft: data.showHeadshot && data.headshotUrl ? '20px' : '0' }}>
+                                <td style={{ verticalAlign: 'top', borderLeft: data.showHeadshot && data.headshotUrl ? '2px solid #06b6d4' : 'none', paddingLeft: data.showHeadshot && data.headshotUrl ? '12px' : '0' }}>
                                     <table cellPadding="0" cellSpacing="0" border="0">
                                         <tbody>
                                             <tr>
-                                                <td style={{ paddingBottom: '5px' }}>
-                                                    <strong style={{ fontSize: '18px', color: '#0f172a', display: 'block' }}>{data.fullName}</strong>
-                                                    <span style={{ fontSize: '14px', color: '#06b6d4', fontWeight: 'bold', textTransform: 'uppercase' }}>{data.title}</span>
+                                                <td style={{ paddingBottom: '3px' }}>
+                                                    <strong style={{ fontSize: '14px', color: '#0f172a', display: 'block' }}>{data.fullName}</strong>
+                                                    <span style={{ fontSize: '11px', color: '#06b6d4', fontWeight: 'bold', textTransform: 'uppercase' }}>{data.title}</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style={{ paddingBottom: '15px' }}>
+                                                <td style={{ paddingBottom: '8px' }}>
                                                     {logoSrc && (
                                                         <img
                                                             src={logoSrc}
                                                             alt="MedLead Convert"
-                                                            style={{ height: '30px', display: 'block' }}
+                                                            style={{ height: '20px', display: 'block' }}
                                                         />
                                                     )}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style={{ fontSize: '13px', color: '#64748b' }}>
+                                                <td style={{ fontSize: '11px', color: '#64748b' }}>
                                                     {data.phone && (
-                                                        <div style={{ marginBottom: '2px' }}>
+                                                        <div style={{ marginBottom: '1px' }}>
                                                             <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>P:</span> <a href={`tel:${data.phone}`} style={{ color: '#64748b', textDecoration: 'none' }}>{data.phone}</a>
                                                         </div>
                                                     )}
                                                     {data.email && (
-                                                        <div style={{ marginBottom: '2px' }}>
+                                                        <div style={{ marginBottom: '1px' }}>
                                                             <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>E:</span> <a href={`mailto:${data.email}`} style={{ color: '#64748b', textDecoration: 'none' }}>{data.email}</a>
                                                         </div>
                                                     )}
                                                     {data.website && (
-                                                        <div style={{ marginBottom: '2px' }}>
+                                                        <div style={{ marginBottom: '1px' }}>
                                                             <span style={{ color: '#06b6d4', fontWeight: 'bold' }}>W:</span> <a href={`https://${data.website}`} style={{ color: '#64748b', textDecoration: 'none' }}>{data.website}</a>
                                                         </div>
                                                     )}
