@@ -1,30 +1,15 @@
-import React, { useState } from 'react';
-import { uploadImage } from '../utils/upload';
+import React from 'react';
 
 const SignatureForm = ({ data, onChange, onImageUpload }) => {
-    const [isUploading, setIsUploading] = useState(false);
-
-    const handleFileChange = async (e) => {
+    const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // 1. Show local preview immediately
+            // Store as local data URL - will be uploaded when copying signature
             const reader = new FileReader();
             reader.onloadend = () => {
                 onImageUpload(reader.result);
             };
             reader.readAsDataURL(file);
-
-            // 2. Upload to Cloudinary
-            setIsUploading(true);
-            try {
-                const url = await uploadImage(file);
-                onImageUpload(url); // Update with remote URL
-                console.log('Uploaded to:', url);
-            } catch (error) {
-                alert('Failed to upload image. Using local preview only (will not work for recipients).');
-            } finally {
-                setIsUploading(false);
-            }
         }
     };
 
@@ -122,15 +107,41 @@ const SignatureForm = ({ data, onChange, onImageUpload }) => {
 
             <div className="input-group">
                 <label className="label">Headshot</label>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
+                
+                <div style={{ marginTop: '0.5rem' }}>
+                    <label className="label">Headshot Type</label>
+                    <select
+                        name="headshotType"
+                        value={data.headshotType || 'upload'}
+                        onChange={(e) => {
+                            onChange(e);
+                            // If switching to logo, set the logo URL
+                            if (e.target.value === 'logo') {
+                                onImageUpload('https://res.cloudinary.com/da2gi6rwv/image/upload/v1763908534/MedLead_Logo_Symbol_h8pjlx.png');
+                            } else if (e.target.value === 'upload' && data.headshotUrl?.includes('MedLead_Logo_Symbol')) {
+                                // Clear the logo URL if switching back to upload
+                                onImageUpload('');
+                            }
+                        }}
                         className="input"
-                        style={{ flex: 1 }}
-                    />
+                    >
+                        <option value="upload">Upload Photo</option>
+                        <option value="logo">MedLead Logo</option>
+                    </select>
                 </div>
+
+                {data.headshotType !== 'logo' && (
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '0.5rem' }}>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="input"
+                            style={{ flex: 1 }}
+                        />
+                    </div>
+                )}
+
                 <div style={{ marginTop: '0.5rem' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                         <input
@@ -142,7 +153,6 @@ const SignatureForm = ({ data, onChange, onImageUpload }) => {
                         <span className="label" style={{ marginBottom: 0 }}>Show Headshot</span>
                     </label>
                 </div>
-                {isUploading && <p style={{ color: '#06b6d4', fontSize: '0.875rem', marginTop: '0.5rem' }}>Uploading to cloud...</p>}
                 {data.headshotUrl && (
                     <div style={{ marginTop: '1rem' }}>
                         <p className="label">Preview:</p>

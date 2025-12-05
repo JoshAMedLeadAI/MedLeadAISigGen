@@ -12,6 +12,7 @@ function App() {
     address: '123 Medical Plaza, Suite 100',
     logo: 'primary', // 'primary', 'secondary', or 'none'
     headshotUrl: '',
+    headshotType: 'upload', // 'upload' or 'logo'
     showHeadshot: true,
     headshotContainerSize: 175, // Fixed circle/container size
     headshotImageScale: 100, // Scale of the image inside (%)
