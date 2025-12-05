@@ -6,8 +6,9 @@ const SignaturePreview = ({ data }) => {
     const [isUploading, setIsUploading] = useState(false);
 
     const getLogoSrc = () => {
-        if (data.logo === 'primary') return 'https://res.cloudinary.com/da2gi6rwv/image/upload/v1763908562/MEDLEAD_Logo_Full_jdjdkg.png';
-        if (data.logo === 'secondary') return 'https://res.cloudinary.com/da2gi6rwv/image/upload/v1763908534/MedLead_Logo_Symbol_h8pjlx.png';
+        // Using Cloudinary transformations to resize logos to correct height (h_40 for 20px display with 2x for retina)
+        if (data.logo === 'primary') return 'https://res.cloudinary.com/da2gi6rwv/image/upload/h_40/v1763908562/MEDLEAD_Logo_Full_jdjdkg.png';
+        if (data.logo === 'secondary') return 'https://res.cloudinary.com/da2gi6rwv/image/upload/h_40/v1763908534/MedLead_Logo_Symbol_h8pjlx.png';
         return null;
     };
 
